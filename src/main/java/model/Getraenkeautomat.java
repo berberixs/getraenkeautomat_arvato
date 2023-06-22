@@ -2,39 +2,63 @@ package model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class Getraenkeautomat {
-    private List<Fach> places;
-    private List<Muenze> muenze;
+    private MuenzenKasse muenzenKasse;
     private String standort;
+    private Map<String, String> faecher = new ConcurrentHashMap<String, String>();
 
-    public Getraenkeautomat(List<Fach> places, String standort, List<Muenze> muenze) {
-        this.places = places;
+    public Getraenkeautomat(MuenzenKasse muenzenKasse, String standort, Map<String, String> faecher) {
+        this.muenzenKasse = muenzenKasse;
         this.standort = standort;
-        this.muenze = muenze;
+        this.faecher = faecher;
     }
 
-    public List<Fach> getPlaces() {
-        return places;
+    public MuenzenKasse getMuenzenKasse() {
+        return muenzenKasse;
+    }
+
+    public void setMuenzenKasse(MuenzenKasse muenzenKasse) {
+        this.muenzenKasse = muenzenKasse;
+    }
+
+    public void setFaecher(Map<String, String> faecher) {
+        this.faecher = faecher;
+    }
+
+    public Map<String, String> getFaecher() {
+        return faecher;
+    }
+
+    public Map<String, String> getGetraenks() {
+        return faecher;
+    }
+
+    public void setGetraenks(Map<String, String> getraenks) {
+        this.faecher = getraenks;
     }
 
     public String getStandort() {
         return standort;
     }
 
-    public void setPlaces(List<Fach> places) {
-        this.places = places;
-    }
-
     public void setStandort(String standort) {
         this.standort = standort;
     }
 
-    public List<Muenze> getMuenze() {
-        return muenze;
+    public boolean contains(String getraenkewunsch) {
+        if (faecher.containsKey(getraenkewunsch)) {
+            return true;
+        }
+        return false;
     }
 
-    public void setMuenze(List<Muenze> muenze) {
-        this.muenze = muenze;
+    public boolean muezenKasseIsEmpty() {
+        if (muenzenKasse.getStand() == 0) {
+            return false;
+        }
+        return true;
     }
 }
