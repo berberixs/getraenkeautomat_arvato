@@ -4,11 +4,18 @@ import java.util.List;
 
 public class GetraenkUndWechselgeld {
     private final String name;
-    private final List<Muenze> muenze;
+    private List<Muenze> muenze;
 
     public GetraenkUndWechselgeld(String name, List<Muenze> muenze) {
         this.name = name;
         this.muenze = muenze;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public List<Muenze> getMuenze() {
+        return muenze;
+    }
 }

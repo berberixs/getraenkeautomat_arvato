@@ -20,26 +20,26 @@ public class Automatmanager {
         this.getraenkeautomat = getraenkeautomat;
     }
 
-    public GetraenkUndWechselgeld kaufen(String name, Muenze... einzahlung) throws MuenzenKasseIsEmptyException, NoSufficentOrValidMuenzenException {
+    public GetraenkUndWechselgeld kaufen(String name, List<Muenze> einzahlung) throws MuenzenKasseIsEmptyException, NoSufficentOrValidMuenzenException, GetraenkAusverkauftException {
+        List<Muenze> muenzen;
         if (getraenkeautomat.contains(name)) {
-            giveChangeFor(einzahlung);
+            muenzen = giveChangeFor(einzahlung);
+        } else {
+            throw new GetraenkAusverkauftException();
         }
-        return new GetraenkUndWechselgeld("milk",null);
+        return new GetraenkUndWechselgeld(name,muenzen);
     }
 
-    private List<Muenze> giveChangeFor(Muenze... einzahlung) throws MuenzenKasseIsEmptyException, NoSufficentOrValidMuenzenException {
+    private List<Muenze> giveChangeFor(List<Muenze> einzahlung) throws MuenzenKasseIsEmptyException, NoSufficentOrValidMuenzenException {
         int kassenStand = getraenkeautomat.getMuenzenKasse().getStand();
-        int betrag = muenzenSumme(List.of(einzahlung));
+        int betrag = muenzenSumme(einzahlung);
         if (getraenkeautomat.muezenKasseIsEmpty()) {
             throw new MuenzenKasseIsEmptyException();
-        } else if (kassenStand < betrag){
-            throw new NoSufficentOrValidMuenzenException();
         } else if (kassenStand == betrag){
             return getraenkeautomat.getMuenzenKasse().getMuenzen();
-        } else if (kassenStand > betrag){
-            return prepareMuenzen(kassenStand - betrag);
+        } else {
+            return prepareMuenzen(Math.abs(betrag -kassenStand));
         }
-        return null;
     }
 
     private int muenzenSumme(List<Muenze> einzahlung) {
@@ -51,6 +51,7 @@ public class Automatmanager {
     }
 
     private List<Muenze> prepareMuenzen(int sum) throws NoSufficentOrValidMuenzenException {
+        int initsum = sum;
         List<Muenze> exchangeResult = new ArrayList<>();
 
         for (Muenze muenze: getraenkeautomat.getMuenzenKasse().getMuenzen()) {
@@ -59,12 +60,14 @@ public class Automatmanager {
             if (sum >= coinValue) {
                 int count = sum / coinValue;
                 exchangeResult.add(muenze);
-                sum = count;
+                sum -= count;
             }
         }
-        if (muenzenSumme(exchangeResult) == sum) {
+        if (muenzenSumme(exchangeResult) == initsum) {
             return exchangeResult;
         } else {
+            System.out.println("Error: " + initsum );
+            System.out.println("Error 1: " + muenzenSumme(exchangeResult) );
             throw new NoSufficentOrValidMuenzenException();
         }
     }

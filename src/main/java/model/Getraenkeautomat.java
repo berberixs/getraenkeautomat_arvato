@@ -57,8 +57,8 @@ public class Getraenkeautomat {
 
     public boolean muezenKasseIsEmpty() {
         if (muenzenKasse.getStand() == 0) {
-            return false;
+            return true;
         }
-        return true;
+        return false;
     }
 }
